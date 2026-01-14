@@ -1,0 +1,52 @@
+<!-- games.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Games - Roblox Revival 2016</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="games">
+  <div class="navbar">
+    <div class="logo">ROBLOX</div>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+  </div>
+
+  <div class="container">
+    <h1>Featured Games (2016 Era)</h1>
+    <div id="games-list">
+      <!-- Games loaded from DB -->
+    </div>
+  </div>
+
+  <script>
+    // Fetch games from Netlify Function (which talks to Supabase)
+    fetch('/.netlify/functions/games')
+      .then(res => res.json())
+      .then(games => {
+        const list = document.getElementById('games-list');
+        if (games.length === 0) {
+          list.innerHTML = '<p>No games yet. Be the first to add one!</p>';
+          return;
+        }
+        list.innerHTML = games.map(game => `
+          <div class="game-card">
+            <img src="${game.thumbnail || 'https://via.placeholder.com/150?text=Game'}" alt="${game.title}">
+            <h3>${game.title}</h3>
+            <p>${game.description || 'No description.'}</p>
+          </div>
+        `).join('');
+      })
+      .catch(err => {
+        console.error('Failed to load games:', err);
+        document.getElementById('games-list').innerHTML = '<p>Error loading games.</p>';
+      });
+  </script>
+
+  <footer>
+    &copy; 2026 Roblox Revival Community
+  </footer>
+</body>
+</html>
